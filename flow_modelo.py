@@ -761,7 +761,7 @@ initial_state = create_task_state(
     name="Enviar recordatorio WA Alianza",
     flow=confirm_booking_48_hours_before,
     metadata=get_metadata(
-        title="¿Pudiste enviar recordatorio?"
+        title="¿Contestó la llamada?"
     ),
 )
 confirm_booking_48_hours_before.initial_state_id=initial_state.id
