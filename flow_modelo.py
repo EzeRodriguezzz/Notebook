@@ -22,6 +22,8 @@ FOLLOW_UP_COORDINATE_VISIT = "follow_up_coordinate_visit"
 FOLLOW_UP_SUGGEST_PROPERTIES = "follow_up_suggest_properties"
 FOLLOW_UP_DEVELOPMENT = "follow_up_development"
 
+NOTIFY_ALLIANCE_WHATSAPP = "notify_alliance_whatsapp"
+
 FIRST_CALL = "first_call"
 SECOND_CALL = "second_call"
 THIRD_CALL = "third_call"
@@ -45,6 +47,7 @@ RETRY_FIRST_COMMERCIAL_CONTACT = "retry_first_commercial_contact"
 PROFILE_CLIENT = "profile_client"
 
 CLOSE_CLIENT = "close_client"
+CLOSE_CASE = "close_case"
 SENT = "sent"
 NOT_SENT = "not_sent"
 ANSWERED = "answered"
@@ -110,6 +113,12 @@ def get_create_task_callback_without_sla(kind, title):
 def get_close_client_callback():
     return {
         "name": CLOSE_CLIENT,
+        "args": {}
+    }
+
+def get_close_case_callback():
+    return {
+        "name": CLOSE_CASE,
         "args": {}
     }
 
