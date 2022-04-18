@@ -1,5 +1,8 @@
 ########################################## INICIO Confirmar visita 48 hs antes MX ####################################################
 
+from flow_modelo import CONFIRM_BOOKING_LESS_24_HOURS, SEND_CONFIRMATION_WHATSAPP, get_create_task_callback
+
+
 confirm_booking_48_hours_before = create_task_flow(name="Confirmar visita 48 hs antes", subtype=CONFIRM_BOOKING_48_HOURS_BEFORE, countries=["MX"])
 
 initial_state = create_task_state(
@@ -23,7 +26,7 @@ state_no_reply = create_option_state(
 )
 
 # State Enviar WA de confirmación
-state_send_whatsapp_for_confirmation = create_option_state(
+state_send_whatsapp_for_confirmation = create_task_state(
     key=SEND_CONFIRMATION_WHATSAPP,
     name="Enviar whatsapp de confirmación",
     flow=confirm_booking_48_hours_before,
@@ -48,12 +51,32 @@ state_whatsapp_sent = create_option_state(
     metadata=get_metadata()
 )
 
+# State Confirmar visita 24 hrs antes
+state_confirm_booking_less_24_hrs = create_task_state(
+    key=CONFIRM_BOOKING_LESS_24_HOURS,
+    name="Confirmar visita 24 hrs antes",
+    flow=confirm_booking_48_hours_before,
+    metadata=get_metadata(),
+    is_final_state=True
+)
+
 # Edge inicial a No contestó
 edge_0 = Edge.objects.create(
     from_state=initial_state,
     to_state=state_no_reply,
     flow=confirm_booking_48_hours_before,
     callbacks=[],
+    order=2,
+)
+
+# Edge entre No contestó y Enviar WA de confirmación
+edge_0 = Edge.objects.create(
+    from_state=state_no_reply,
+    to_state=state_send_whatsapp_for_confirmation,
+    flow=confirm_booking_48_hours_before,
+    callbacks=[
+        get_create_task_callback(kind=SEND_CONFIRMATION_WHATSAPP, sla={"minutes": 30}, title="Enviar WA de confirmación")
+    ],
     order=2,
 )
 
@@ -80,7 +103,20 @@ edge_3 = Edge.objects.create(
     from_state=state_whatsapp_not_sent,
     to_state=state_send_whatsapp_for_confirmation,
     flow=confirm_booking_48_hours_before,
-    callbacks=[],
+    callbacks=[
+        get_create_task_callback(kind=SEND_CONFIRMATION_WHATSAPP, sla={"minutes": 30}, title="Enviar whatsapp de confirmación")
+    ],
+    order=1,
+)
+
+# Edge entre Se envió WA y Confirmar visita 24 hrs antes
+edge_4 = Edge.objects.create(
+    from_state=state_whatsapp_sent,
+    to_state=state_confirm_booking_less_24_hrs,
+    flow=confirm_booking_48_hours_before,
+    callbacks=[
+        get_create_task_callback(kind=CONFIRM_BOOKING_LESS_24_HOURS, sla={"hours": 24}, title="Confirmar visita 24 hrs antes")
+    ],
     order=1,
 )
 
@@ -94,10 +130,10 @@ edge_3 = Edge.objects.create(
 
 
 
-#### Inicio Vertical Contestó
+#### Inicio Vertical Contestó > Confirmó visita
 # State Contestó
 state_replied = create_option_state(
-    key="contesto",
+    key="replied",
     name="Contestó",
     flow=confirm_booking_48_hours_before,
     metadata=get_metadata(
