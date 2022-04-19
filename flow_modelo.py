@@ -11,6 +11,8 @@ SEND_CLOSE_WHATSAPP = "send_close_whatsapp"
 SEND_EMAIL = "send_email"
 SEND_REMEMBER_ALLIANCE = "send_remember_alliance"
 SEND_REMEMBER_ALLIANCE_BOOKER = "send_remember_alliance_booker"
+SEND_FEEDBACK = "send_feedback"
+SEND_COMMERCIAL_REPORT = "send_commercial_report"
 SUGGEST_PROPERTIES = "suggest_properties"
 
 FOLLOW_UP = "follow_up"
@@ -21,6 +23,9 @@ FOLLOW_UP_THIRD_WHATSAPP = "follow_up_third_whatsapp"
 FOLLOW_UP_COORDINATE_VISIT = "follow_up_coordinate_visit"
 FOLLOW_UP_SUGGEST_PROPERTIES = "follow_up_suggest_properties"
 FOLLOW_UP_DEVELOPMENT = "follow_up_development"
+FOLLOW_UP_BOOKING = "follow_up_booking"
+FOLLOW_UP_BOOKING_PROPERTY = "follow_up_booking_property"
+FOLLOW_UP_COUNTEROFFER = "follow_up_counteroffer"
 
 NOTIFY_ALLIANCE_WHATSAPP = "notify_alliance_whatsapp"
 
@@ -28,7 +33,10 @@ FIRST_CALL = "first_call"
 SECOND_CALL = "second_call"
 THIRD_CALL = "third_call"
 
+GENERATE_COMMERCIAL_REPORT = "generate_commercial_report"
 SEARCH_PROPERTIES = "search_properties"
+OFFER_PROPERTY = "offer_property"
+CLOSE_OFFER = "close_offer"
 
 COORDINATE_VISIT = "coordinate_visit"
 COORDINATE_VISIT_BOOKER = "coordinate_visit_booker"
@@ -37,6 +45,7 @@ BOOK_VISIT = "book_visit"
 RESEND_COORDINATE_VISIT_WHATSAPP = "resend_coordinate_visit_whatsapp"
 DERIVATE_TO_BOOKER = "derivate_to_booker"
 CREATE_BOOKING = "create_booking"
+FEEDBACK_BOOKING = "feedback_booking"
 
 CONFIRM_BOOKING_48_HOURS_BEFORE = "confirm_booking_48_hours_before"
 CONFIRM_BOOKING_BETWEEN_48_AND_24_HOURS = "confirm_booking_between_48_and_24_hours"
@@ -54,6 +63,7 @@ ANSWERED = "answered"
 NOT_ANSWERED = "not_answered"
 NOT_FOUND_ANSWER = "not_found_answered"
 LOST_INTEREST = "lost_interest"
+YES = "yes"
 
 TASK = "task"
 OPTION = "option"
@@ -69,7 +79,17 @@ CREATE_NEXT_TASK = "create_next_task"
 SET_PROFILING = "set_profiling"
 ADVANCE_IN_FUNNEL_CALLBACK = "advance_in_funnel"
 
+UNREACHED = "unreached"
 PITCHED = "pitched"
+SCHEDULED = "scheduled"
+PROPOSAL_MADE = "proposal_made"
+LISTED = "listed"
+CONSULTED = "consulted"
+RESERVED = "reserved"
+RESERVE_ACCEPTED = "reserve_accepted"
+SOLD = "sold"
+POST_SOLD = "post_sold"
+CLOSED = "closed"
 
 SEND_EMAIL_TEMPLATE = "send_email_template"
 SEND_WHATSAPP_TEMPLATE = "send_whatsapp_template"
@@ -164,7 +184,7 @@ def create_task_flow(name, subtype, countries=["AR", "MX"], whatsapp_template_me
         subtype=subtype,
         version=1,
         status=ACTIVE,
-        roles=roles,
+	        roles=roles,
         countries=countries,
         metadata=whatsapp_template_metadata
     )
@@ -198,6 +218,7 @@ def create_action_state(key, name, flow, metadata, is_final_state=False):
         metadata=metadata,
         is_final_state=is_final_state
     )
+
 
 ################################################ FIN MÉTODOS AUXILIARES ###########################################################
 
