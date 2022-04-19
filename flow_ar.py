@@ -1,6 +1,6 @@
-########################################## INICIO Confirmar visita 48 hs antes MX ####################################################
+########################################## INICIO Confirmar visita 48 hs antes AR ####################################################
 
-from flow_modelo import CONFIRM_BOOKING_4_HOURS_BEFORE, CONFIRM_BOOKING_LESS_24_HOURS, COORDINATE_VISIT, COORDINATE_VISIT_BOOKER, NOTIFY_ALLIANCE_WHATSAPP, SEND_CONFIRMATION_WHATSAPP, SEND_CONFIRMATION_WHATSAPP_WHEN_BOOKED, create_action_state, create_task_state, get_close_case_callback, get_create_task_callback
+from flow_modelo import BACKOFFICE_GROUP, CANCELATION_MOTIVE_SELECT, CONFIRM_BOOKING_4_HOURS_BEFORE, CONFIRM_BOOKING_LESS_24_HOURS, COORDINATE_VISIT, NOTIFY_ALLIANCE_WHATSAPP, SEND_CONFIRMATION_WHATSAPP, SEND_CONFIRMATION_WHATSAPP_WHEN_BOOKED, create_action_state, create_task_state, get_close_case_callback, get_create_task_callback, get_create_task_callback_without_sla, get_metadata
 
 
 confirm_booking_48_hours_before = create_task_flow(name="Confirmar visita 48 hs antes", subtype=CONFIRM_BOOKING_48_HOURS_BEFORE, countries=["MX"])
@@ -115,7 +115,7 @@ edge_4 = Edge.objects.create(
     to_state=state_confirm_booking_less_24_hrs,
     flow=confirm_booking_48_hours_before,
     callbacks=[
-        get_create_task_callback(kind=CONFIRM_BOOKING_LESS_24_HOURS, sla={"hours": 24}, title="Confirmar visita 24 hrs antes")
+        get_create_task_callback_without_sla(kind=CONFIRM_BOOKING_LESS_24_HOURS, title="Confirmar visita 24 hrs antes")
     ],
     order=1,
 )
@@ -154,9 +154,9 @@ state_cancel_visit = create_option_state(
 )
 
 # State Cancelar visita
-state_coordinate_visit_AC_MX = create_task_state(
-    key=COORDINATE_VISIT_BOOKER,
-    name="Coordinar visita AC MX",
+state_coordinate_visit_BO_AR = create_task_state(
+    key=COORDINATE_VISIT,
+    name="Coordinar visita BO AR",
     flow=confirm_booking_48_hours_before,
     metadata=get_metadata(),
     is_state_final=True
@@ -194,18 +194,18 @@ state_place_role = create_action_state(
     name="Colocar rol asignado",
     flow=confirm_booking_48_hours_before,
     metadata={
-
+        "title": "Colocar rol del asesor",
+        "state_type": AGENT_AUTOCOMPLETE,
+        "agent_group" : "BackOfficeGroup"
     }
 )
 
-# State colocar rol asignado
+# State colocar motivo de cancelación
 state_cancelation_motive = create_action_state(
     key="cancelation_motive",
     name="Motivo de cancelación",
     flow=confirm_booking_48_hours_before,
-    metadata={
-        
-    }
+    metadata=get_metadata(state_type=CANCELATION_MOTIVE_SELECT)
 )
 
 #State Cerrar caso
@@ -275,13 +275,13 @@ edge_18 = Edge.objects.create(
     order=2,
 )
 
-# Edge entre Colocal rol asignado y Coordinar visita AC MX
+# Edge entre Colocal rol asignado y Coordinar visita BO AR
 edge_19 = Edge.objects.create(
     from_state=state_place_role,
-    to_state=state_coordinate_visit_AC_MX,
+    to_state=state_coordinate_visit_BO_AR,
     flow=confirm_booking_48_hours_before,
     callbacks=[
-        get_create_task_callback(kind=COORDINATE_VISIT, sla={"hours": 2}, title="Coordinar visita AC MX")
+        get_create_task_callback(kind=COORDINATE_VISIT, sla={"hours": 2}, title="Coordinar visita BO AR")
     ],
     order=1,
 )
@@ -305,7 +305,6 @@ edge_20 = Edge.objects.create(
     ],
     order=1,
 )
-
 
 
 #### Inicio Vertical Contestó > Confirmó visita
@@ -407,7 +406,7 @@ edge_10 = Edge.objects.create(
     to_state=state_confirm_booking_4_hrs,
     flow=confirm_booking_48_hours_before,
     callbacks=[
-        get_create_task_callback(kind=CONFIRM_BOOKING_4_HOURS_BEFORE, sla={"hours": 48}, title="Confirmar visita 4hrs antes")
+        get_create_task_callback_without_sla(kind=CONFIRM_BOOKING_4_HOURS_BEFORE, title="Confirmar visita 4hrs antes")
     ],
     order=1,
 )
